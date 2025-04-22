@@ -51,6 +51,7 @@ produto_colecao coletor_add(){
 
     do{
     printf("Informe a descrição do item: ");
+    while (getchar() != '\n'); // limpa o buffer
     if (fgets(item_variador.descricao, 256, stdin) == NULL) {
         printf("Erro ao ler a descrição!\n");
         continue;
