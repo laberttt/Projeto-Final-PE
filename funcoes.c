@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 #include "funcoes.h"
 
 static int ultimo_id;
