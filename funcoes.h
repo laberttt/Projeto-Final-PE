@@ -11,6 +11,7 @@ int contar_linhas_csv(const char *nome_arquivo);
 int contar_palavras_descricao(const char *str);
 produto_colecao coletor_add();
 void carregar_ultimo_id();
+void limpar_buffer();
 int gerar_novo_id();
 void cadastrar_arquivo(produto_colecao produto);
 void consultar_item_arquivo(int identificador);

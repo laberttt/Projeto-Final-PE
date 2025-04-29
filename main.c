@@ -19,6 +19,8 @@ int main() {
        printf("Digite uma opcao: ");
        scanf("%d", &opc);
 
+       limpar_buffer();
+       
        switch (opc)
        {
         case 0:

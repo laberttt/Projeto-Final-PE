@@ -60,55 +60,61 @@ int contar_linhas_csv(const char *nome_arquivo) {
 // A variável 'quantidade_palavras' será retornada posteriormente, e tem a função de ser incrementada toda vez que uma palavra for encontrada
 // A variável 'verificador' funciona apenas como um auxiliar para que o loop funcione -> Verifica espaços ou letras
 // A variável 'i' tem a função apenas de iniciar o loop
-int contar_palavras_descricao(const char *str){
-    int quantidade_palavras;
-    int verificador;
-    int i;
-    
-    for(i = 0; str[i] != '\0'; i++){
-        if(isspace(str[i])){ // Caso seja espaço, será retornado 'true', e a condição do if é atendida (verificador recebe 0).
+int contar_palavras_descricao(const char *str) {
+    int quantidade_palavras = 0;
+    int verificador = 0;
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (isspace(str[i])) {
             verificador = 0;
-        } else if(verificador == 0){ // Quando a condição acima não for atendida, significa que é uma letra. Será verificado se o caractere anterior é um espaço
-            verificador = 1; // confirmado que é um espaço, será incrementado na variável 'quantidade_palavras'
-            quantidade_palavras = quantidade_palavras + 1;
+        } else if (verificador == 0) {
+            verificador = 1;
+            quantidade_palavras++;
         }
     }
     return quantidade_palavras;
 }
 
-produto_colecao coletor_add(){
-    produto_colecao item_variador;
+void limpar_buffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
+// Função principal de coleta
+produto_colecao coletor_add() {
+    produto_colecao item_variador;
     item_variador.identificador = gerar_novo_id();
 
-    do{
-    printf("Informe a descrição do item: ");
-    while (getchar() != '\n'); // limpa o buffer
-    if (fgets(item_variador.descricao, 256, stdin) == NULL) {
-        printf("Erro ao ler a descrição!\n");
-        continue;
-    }
+    int palavras = 0;
 
-    item_variador.descricao[strcspn(item_variador.descricao, "\n")] = 0; // Removendo o '\n'
+    do {
+        printf("Informe a descricao do item: ");
+        if (fgets(item_variador.descricao, 256, stdin) == NULL) {
+            printf("Erro ao ler a descricao!\n");
+            continue;
+        }
 
-    if(contar_palavras_descricao(item_variador.descricao) < 2){
-        printf("DIGITE AO MENOS 2 PALAVRAS PARA DESCRIÇÃO!\n");
-    }
+        item_variador.descricao[strcspn(item_variador.descricao, "\n")] = 0; // Remove '\n'
+        palavras = contar_palavras_descricao(item_variador.descricao);
 
-    }while(contar_palavras_descricao(item_variador.descricao) < 2); // O loop continua caso sejam digitados menos de duas palavras
+        if (palavras < 2) {
+            printf("DIGITE AO MENOS 2 PALAVRAS PARA DESCRICAO!\n");
+        }
+
+    } while (palavras < 2);
 
     do {
         printf("Informe a quantidade deste item: ");
-        
-        if (scanf("%d", &item_variador.quantidade) != 1) { // Verifica se foi digitado realmente um número
-            printf("INFORME UM VALOR VÁLIDO!\n");
-            while (getchar() != '\n'); // limpa lixo do buffer
-            item_variador.quantidade = -1; // força repetir
+        if (scanf("%d", &item_variador.quantidade) != 1) {
+            printf("INFORME UM VALOR VALIDO!\n");
+            while (getchar() != '\n'); // limpa o buffer
+            item_variador.quantidade = -1;
         } else if (item_variador.quantidade < 1) {
             printf("INFORME UM VALOR POSITIVO MAIOR OU IGUAL A 1!\n");
         }
-    
-    }while (item_variador.quantidade < 1);
+    } while (item_variador.quantidade < 1);
+
+    while (getchar() != '\n'); // limpa o buffer após scanf
 
     return item_variador;
 }
@@ -146,7 +152,7 @@ void consultar_item_arquivo(int identificador) {
     FILE *arq = fopen("gerenciamento.csv", "r");
 
     if (arq == NULL) {
-        printf("VERIFIQUE SE HÁ ITENS A SEREM CONSULTADOS!\n");
+        printf("VERIFIQUE SE HA ITENS A SEREM CONSULTADOS!\n");
         return;
     }
 
@@ -178,7 +184,7 @@ void consultar_item_arquivo(int identificador) {
         }
     }
 
-    printf("Item com ID %d não encontrado.\n", identificador);
+    printf("Item com ID %d nao encontrado.\n", identificador);
     fclose(arq);
 }
 
@@ -187,10 +193,10 @@ void remover_item_arquivo(int identificador){
     FILE *temporario = fopen("temporario.csv", "w");
 
     if (arq == NULL){
-        printf("VERIFIQUE SE HÁ ITENS A SEREM REMOVIDOS!\n");
+        printf("VERIFIQUE SE HA ITENS A SEREM REMOVIDOS!\n");
         return;
     } else if (temporario == NULL){
-        printf("ERRO DE EXECUÇÃO!");
+        printf("ERRO DE EXECUCAO!");
         return;
     }
 
@@ -225,7 +231,7 @@ void remover_item_arquivo(int identificador){
         printf("O ITEM COM ID %d FOI REMOVIDO COM SUCESSO!\n", identificador);
     } else {
         remove("temporario.csv");
-        printf("O ITEM COM ID %d NÃO FOI ENCONTRADO!\n", identificador);
+        printf("O ITEM COM ID %d NAO FOI ENCONTRADO!\n", identificador);
     }
 }
 
@@ -234,13 +240,13 @@ produto_colecao alterar_descricao_quantidade(int identificador){
 
     do{
     while (getchar() != '\n'); // Limpeza do buffer
-    printf("Informe a NOVA descrição do item: ");
+    printf("Informe a NOVA descricao do item: ");
     fgets(item_variador.descricao, 256, stdin);
 
     item_variador.descricao[strcspn(item_variador.descricao, "\n")] = 0; // Removendo o '\n'
 
     if(contar_palavras_descricao(item_variador.descricao) < 2){
-        printf("DIGITE AO MENOS 2 PALAVRAS PARA DESCRIÇÃO!\n");
+        printf("DIGITE AO MENOS 2 PALAVRAS PARA DESCRICAO!\n");
     }
 
     }while(contar_palavras_descricao(item_variador.descricao) < 2); // O loop continua caso sejam digitados menos de duas palavras
@@ -249,7 +255,7 @@ produto_colecao alterar_descricao_quantidade(int identificador){
         printf("Informe a NOVA quantidade deste item: ");
         
         if (scanf("%d", &item_variador.quantidade) != 1) { // Verifica se foi digitado realmente um número
-            printf("INFORME UM VALOR VÁLIDO!\n");
+            printf("INFORME UM VALOR VALIDO!\n");
             while (getchar() != '\n'); // limpa lixo do buffer
             item_variador.quantidade = -1; // força repetir
         } else if (item_variador.quantidade < 1) {
@@ -270,10 +276,10 @@ void alterar_descricao_arquivo(int identificador){
     FILE *temporario = fopen("temporario.csv", "w");
 
     if(arq == NULL){
-        printf("VERIFIQUE SE HÁ ITENS A SEREM MODIFICADOS");
+        printf("VERIFIQUE SE HA ITENS A SEREM MODIFICADOS");
         return;
     } else if(temporario == NULL){
-        printf("ERRO DE EXECUÇÃO!");
+        printf("ERRO DE EXECUCAO!");
         return;
     }
 
@@ -309,20 +315,20 @@ void alterar_descricao_arquivo(int identificador){
                 return;
             }
             if (rename("temporario.csv", "gerenciamento.csv") != 0) {
-                perror("Falha ao renomear o arquivo temporário");
+                perror("Falha ao renomear o arquivo temporario");
                 return;
             }
             printf("\nITEM MODIFICADO COM SUCESSO!\n");
         } else {
             remove("temporario.csv"); // Remove o temporário se nenhum item foi deletado
-            printf("Item não encontrado.\n");
+            printf("Item nao encontrado.\n");
         }
     }
 
 void listar_arquivo(){
     FILE *arq = fopen("gerenciamento.csv", "r"); // Abre o arquivo em modo leitura
     if (arq == NULL) {
-        printf("VERIFIQUE SE HÁ ITENS A SEREM LISTADOS!");
+        printf("VERIFIQUE SE HA ITENS A SEREM LISTADOS!");
         return;
     }
 
@@ -331,7 +337,7 @@ void listar_arquivo(){
     fgets(cada_linha, sizeof(cada_linha), arq);
     
     printf("\n=== LISTA DE ITENS ===\n");
-    printf("ID  | DESCRIÇÃO          | QUANTIDADE\n");
+    printf("ID  | DESCRICAO          | QUANTIDADE\n");
     printf("----|--------------------|-----------\n");
 
     // Lê e exibe cada linha restante
@@ -347,7 +353,7 @@ void listar_arquivo(){
         if (id_str != NULL && descricao != NULL && quantidade_str != NULL) {
             printf("%-3s | %-18s | %s\n", id_str, descricao, quantidade_str);
         } else {
-            printf("Formato inválido na linha: %s\n", cada_linha);
+            printf("Formato invalido na linha: %s\n", cada_linha);
         }
     }
 
