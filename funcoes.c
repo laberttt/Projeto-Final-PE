@@ -4,6 +4,37 @@
 #include <ctype.h>
 #include "funcoes.h"
 
+static int ultimo_id;
+
+void carregar_ultimo_id() {  
+    FILE *arq = fopen("gerenciamento.csv", "r");  
+    if (arq == NULL) {
+        ultimo_id = 0;  // Se arquivo não existe, começa do zero
+        return;
+    }  
+
+    char linha[256];  
+    int maior_id = 0;  
+
+    // Pula o cabeçalho  
+    fgets(linha, sizeof(linha), arq);  
+
+    while (fgets(linha, sizeof(linha), arq)) {  
+        int id;  
+        if (sscanf(linha, "%d;", &id) == 1 && id > maior_id) {  
+            maior_id = id;  
+        }  
+    }  
+
+    ultimo_id = maior_id;  // Atualiza o último ID conhecido  
+    fclose(arq);  
+}
+
+// Função que gera novos IDs
+int gerar_novo_id() {
+    return ++ultimo_id;
+}
+
 int contar_linhas_csv(const char *nome_arquivo) {
     FILE *arq = fopen(nome_arquivo, "r");
     if (arq == NULL) {
@@ -40,14 +71,14 @@ int contar_palavras_descricao(const char *str){
             verificador = 1; // confirmado que é um espaço, será incrementado na variável 'quantidade_palavras'
             quantidade_palavras = quantidade_palavras + 1;
         }
-        }
-
-    return quantidade_palavras;
     }
+    return quantidade_palavras;
+}
 
-produto_colecao coletor_add(){ 
+produto_colecao coletor_add(){
     produto_colecao item_variador;
 
+    item_variador.identificador = gerar_novo_id();
 
     do{
     printf("Informe a descrição do item: ");
@@ -65,7 +96,6 @@ produto_colecao coletor_add(){
 
     }while(contar_palavras_descricao(item_variador.descricao) < 2); // O loop continua caso sejam digitados menos de duas palavras
 
-
     do {
         printf("Informe a quantidade deste item: ");
         
@@ -78,10 +108,6 @@ produto_colecao coletor_add(){
         }
     
     }while (item_variador.quantidade < 1);
-    
-
-    item_variador.identificador = contar_linhas_csv("gerenciamento.csv");
-
 
     return item_variador;
 }
@@ -110,9 +136,10 @@ void cadastrar_arquivo(produto_colecao produto){
     }
 
     fprintf(arq, "%d;%s;%d\n", produto.identificador, produto.descricao, produto.quantidade);
-       
-    }
 
+    fclose(arq);
+    printf("\nO ITEM FOI CADASTRADO COM SUCESSO!\n");  
+}
 
 void consultar_item_arquivo(int identificador) {
     FILE *arq = fopen("gerenciamento.csv", "r");
@@ -166,14 +193,12 @@ void remover_item_arquivo(int identificador){
         return;
     }
 
-
     char cada_linha[256];
     int leitura_id;
     char copia_linha[256];
     int quant_remover = 0;
 
     fgets(cada_linha, sizeof(cada_linha), arq); // Para Lê o cabeçalho
-
     fputs(cada_linha, temporario);
 
     while(fgets(cada_linha, sizeof(cada_linha), arq)){
@@ -206,7 +231,6 @@ void remover_item_arquivo(int identificador){
 produto_colecao alterar_descricao_quantidade(int identificador){
     produto_colecao item_variador;
 
-
     do{
     while (getchar() != '\n'); // Limpeza do buffer
     printf("Informe a NOVA descrição do item: ");
@@ -219,7 +243,6 @@ produto_colecao alterar_descricao_quantidade(int identificador){
     }
 
     }while(contar_palavras_descricao(item_variador.descricao) < 2); // O loop continua caso sejam digitados menos de duas palavras
-
 
     do {
         printf("Informe a NOVA quantidade deste item: ");
@@ -235,11 +258,8 @@ produto_colecao alterar_descricao_quantidade(int identificador){
     } while (item_variador.quantidade < 1);
 
     item_variador.identificador = identificador;
-
     return item_variador;
-
 }
-
 
 void alterar_descricao_arquivo(int identificador){
 
@@ -282,7 +302,6 @@ void alterar_descricao_arquivo(int identificador){
         fclose(arq);
         fclose(temporario);
 
-
         if (quant_modificados > 0) {
             if (remove("gerenciamento.csv") != 0) {
                 perror("Falha ao remover o arquivo original");
@@ -292,7 +311,7 @@ void alterar_descricao_arquivo(int identificador){
                 perror("Falha ao renomear o arquivo temporário");
                 return;
             }
-            printf("Item removido com sucesso!\n");
+            printf("\nITEM MODIFICADO COM SUCESSO!\n");
         } else {
             remove("temporario.csv"); // Remove o temporário se nenhum item foi deletado
             printf("Item não encontrado.\n");
@@ -310,7 +329,6 @@ void listar_arquivo(){
 
     fgets(cada_linha, sizeof(cada_linha), arq);
     
-
     printf("\n=== LISTA DE ITENS ===\n");
     printf("ID  | DESCRIÇÃO          | QUANTIDADE\n");
     printf("----|--------------------|-----------\n");

@@ -5,10 +5,11 @@
 int main() {
     int id, opc;
     produto_colecao item;
+    carregar_ultimo_id();
 
     do
     {
-       printf("======== Menu ========\n");
+       printf("\n======== Menu ========\n");
        printf("1. Cadastrar um item\n");
        printf("2. Consultar um item\n");
        printf("3. Remover um item\n");
