@@ -57,6 +57,24 @@ int contar_palavras_descricao(const char *str) {
     return quantidade_palavras;
 }
 
+int contar_linhas_csv(const char *nome_arquivo) {
+    FILE *arq = fopen(nome_arquivo, "r");
+    if (arq == NULL) {
+        puts("Erro ao abrir o arquivo!");
+        return 0;
+    }
+
+    char linha[256];
+    int linhas = 0;
+
+    while (fgets(linha, sizeof(linha), arq)) {
+        linhas++;
+    }
+
+    fclose(arq);
+    return linhas;
+}
+
 void limpar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -338,6 +356,6 @@ void listar_arquivo(){
             printf("Formato invalido na linha: %s\n", cada_linha);
         }
     }
-
     fclose(arq); 
+    printf("\n\t\tTem %d itens\n", contar_linhas_csv("gerenciamento.csv"));
 }
