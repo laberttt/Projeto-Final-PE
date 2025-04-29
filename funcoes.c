@@ -36,24 +36,6 @@ int gerar_novo_id() {
     return ++ultimo_id;
 }
 
-int contar_linhas_csv(const char *nome_arquivo) {
-    FILE *arq = fopen(nome_arquivo, "r");
-    if (arq == NULL) {
-        puts("Erro ao abrir o arquivo!");
-        return 0;
-    }
-
-    char linha[256];
-    int linhas = 0;
-
-    while (fgets(linha, sizeof(linha), arq)) {
-        linhas++;
-    }
-
-    fclose(arq);
-    return linhas;
-}
-
 // Função que será utilizada na função de coletar dados para que sejam adicionados itens.
 // Segue-se, linha por linha:
 // O parâmetro a ser recebido é a string/frase/descrição do item a ser adicionado
