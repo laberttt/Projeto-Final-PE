@@ -1,12 +1,9 @@
 IDENTIFICADOR;DESCRIÇÃO;QUANTIDADE
 1;Gol Quadrado em otimo estado de conservacao;2
 2;Puma com um estado ruim de conservacao;1
-3;Kombi em estado regular;5
-4;Kombi em estado regular;5
 5;Impala com um pessimo estado de conservacao;6
 6;Variant com um estado ruim de conservacao;7
 7;Mustang em otimo estado de conservacao;7
-8;Variant em bom estado de conservacao;7
 9;Corcel em otimo estado de conservacao;8
 10;Landau em bom estado de conservacao;8
 11;Corcel com um estado ruim de conservacao;4
@@ -36,7 +33,7 @@ IDENTIFICADOR;DESCRIÇÃO;QUANTIDADE
 35;Chevette com um estado ruim de conservacao;1
 36;Monza com um estado ruim de conservacao;9
 37;Maverick em bom estado de conservacao;3
-38;Dodge Dart em bom estado de conservacao;9
+38;Opala 99 em otimo estado;4
 39;Chevette em estado regular;2
 40;Puma com um estado ruim de conservacao;4
 42;corolla velho;5
@@ -45,3 +42,4 @@ IDENTIFICADOR;DESCRIÇÃO;QUANTIDADE
 45;Opala em pessimo estado;3
 46;Chevette 98 em otimo estado;2
 47;Gol 98 em otimo estado de conversacao;5
+48;Uno 98 em bom estado;1

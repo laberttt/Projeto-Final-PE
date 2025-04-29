@@ -31,7 +31,6 @@ void carregar_ultimo_id() {
     fclose(arq);  
 }
 
-// Função que gera novos IDs
 int gerar_novo_id() {
     return ++ultimo_id;
 }
@@ -94,7 +93,7 @@ produto_colecao coletor_add() {
             continue;
         }
 
-        item_variador.descricao[strcspn(item_variador.descricao, "\n")] = 0; // Remove '\n'
+        item_variador.descricao[strcspn(item_variador.descricao, "\n")] = 0;
         palavras = contar_palavras_descricao(item_variador.descricao);
 
         if (palavras < 2) {
@@ -107,20 +106,18 @@ produto_colecao coletor_add() {
         printf("Informe a quantidade deste item: ");
         if (scanf("%d", &item_variador.quantidade) != 1) {
             printf("INFORME UM VALOR VALIDO!\n");
-            while (getchar() != '\n'); // limpa o buffer
+            limpar_buffer();  // ADICIONADO
             item_variador.quantidade = -1;
         } else if (item_variador.quantidade < 1) {
             printf("INFORME UM VALOR POSITIVO MAIOR OU IGUAL A 1!\n");
         }
+        limpar_buffer();  // ADICIONADO
     } while (item_variador.quantidade < 1);
-
-    while (getchar() != '\n'); // limpa o buffer após scanf
 
     return item_variador;
 }
 
 void cadastrar_arquivo(produto_colecao produto){
-
     FILE *arq = fopen("gerenciamento.csv", "r");
     if(arq == NULL){
         puts("NENHUM ARQUIVO FOI ENCONTRADO!");
@@ -129,9 +126,7 @@ void cadastrar_arquivo(produto_colecao produto){
         arq = fopen("gerenciamento.csv", "w");
         fprintf(arq, "IDENTIFICADOR;DESCRIÇÃO;QUANTIDADE\n");
         fclose(arq);
-
-    }
-    else{
+    } else {
         fclose(arq);
     }
 
@@ -143,7 +138,6 @@ void cadastrar_arquivo(produto_colecao produto){
     }
 
     fprintf(arq, "%d;%s;%d\n", produto.identificador, produto.descricao, produto.quantidade);
-
     fclose(arq);
     printf("\nO ITEM FOI CADASTRADO COM SUCESSO!\n");  
 }
@@ -159,15 +153,13 @@ void consultar_item_arquivo(int identificador) {
     char cada_linha[256];
     int leitura_id;
 
-    // Lê o cabeçalho e ignora
     fgets(cada_linha, sizeof(cada_linha), arq);
 
     while (fgets(cada_linha, sizeof(cada_linha), arq)) {
-        // Faz uma cópia da linha para manipular com strtok
         char linha[256];
         strcpy(linha, cada_linha);
 
-        char *id_str = strtok(linha, ";"); // Vai delimitar de acordo com o ';'
+        char *id_str = strtok(linha, ";");
         char *descricao = strtok(NULL, ";");
         char *quantidade_str = strtok(NULL, ";");
 
@@ -177,7 +169,6 @@ void consultar_item_arquivo(int identificador) {
             if (leitura_id == identificador) {
                 printf("Item encontrado:\n");
                 printf("ID: %d | Descrição: %s | Quantidade: %s\n", leitura_id, descricao, quantidade_str);
-
                 fclose(arq);
                 return;
             }
@@ -216,7 +207,7 @@ void remover_item_arquivo(int identificador){
         leitura_id = atoi(id_str); // Transformado o id para inteiro
 
         if(leitura_id == identificador){
-            quant_remover = quant_remover + 1;
+            quant_remover++;
         } else {
             fputs(cada_linha, temporario); // Escreve a linha no arquivo temporário, caso não seja encontrado o identificador
         }
@@ -227,7 +218,7 @@ void remover_item_arquivo(int identificador){
 
     if(quant_remover != 0){
         remove("gerenciamento.csv");
-        rename("temporario.csv", "gerenciamento.csv"); // Renomenado para o se tornar o arquivo original
+        rename("temporario.csv", "gerenciamento.csv");
         printf("O ITEM COM ID %d FOI REMOVIDO COM SUCESSO!\n", identificador);
     } else {
         remove("temporario.csv");
@@ -239,29 +230,28 @@ produto_colecao alterar_descricao_quantidade(int identificador){
     produto_colecao item_variador;
 
     do{
-    while (getchar() != '\n'); // Limpeza do buffer
-    printf("Informe a NOVA descricao do item: ");
-    fgets(item_variador.descricao, 256, stdin);
+        limpar_buffer();  // ADICIONADO
+        printf("Informe a NOVA descricao do item: ");
+        fgets(item_variador.descricao, 256, stdin);
 
-    item_variador.descricao[strcspn(item_variador.descricao, "\n")] = 0; // Removendo o '\n'
+        item_variador.descricao[strcspn(item_variador.descricao, "\n")] = 0;
 
-    if(contar_palavras_descricao(item_variador.descricao) < 2){
-        printf("DIGITE AO MENOS 2 PALAVRAS PARA DESCRICAO!\n");
-    }
+        if(contar_palavras_descricao(item_variador.descricao) < 2){
+            printf("DIGITE AO MENOS 2 PALAVRAS PARA DESCRICAO!\n");
+        }
 
-    }while(contar_palavras_descricao(item_variador.descricao) < 2); // O loop continua caso sejam digitados menos de duas palavras
+    }while(contar_palavras_descricao(item_variador.descricao) < 2);
 
     do {
         printf("Informe a NOVA quantidade deste item: ");
-        
-        if (scanf("%d", &item_variador.quantidade) != 1) { // Verifica se foi digitado realmente um número
+        if (scanf("%d", &item_variador.quantidade) != 1) {
             printf("INFORME UM VALOR VALIDO!\n");
-            while (getchar() != '\n'); // limpa lixo do buffer
-            item_variador.quantidade = -1; // força repetir
+            limpar_buffer();  // ADICIONADO
+            item_variador.quantidade = -1;
         } else if (item_variador.quantidade < 1) {
             printf("INFORME UM VALOR POSITIVO MAIOR OU IGUAL A 1!\n");
         }
-    
+        limpar_buffer();  // ADICIONADO
     } while (item_variador.quantidade < 1);
 
     item_variador.identificador = identificador;
@@ -269,7 +259,6 @@ produto_colecao alterar_descricao_quantidade(int identificador){
 }
 
 void alterar_descricao_arquivo(int identificador){
-
     produto_colecao novo_item;
 
     FILE *arq = fopen("gerenciamento.csv", "r");
@@ -291,6 +280,7 @@ void alterar_descricao_arquivo(int identificador){
     fgets(cada_linha, sizeof(cada_linha), arq); // Lê o cabeçalho 
     fputs(cada_linha, temporario); // Escrevendo o cabeçalho no arquivo temporário
 
+
     while(fgets(cada_linha, sizeof(cada_linha), arq)){
         strcpy(copia_linha, cada_linha); // Necessário pois o strtok modifica a string original
         
@@ -298,7 +288,7 @@ void alterar_descricao_arquivo(int identificador){
         leitura_id = atoi(id_str); // Transformando o id para inteiro
 
         if(leitura_id == identificador){
-            quant_modificados += 1;
+            quant_modificados++;
             novo_item = alterar_descricao_quantidade(identificador);
             fprintf(temporario, "%d;%s;%d\n", novo_item.identificador, novo_item.descricao, novo_item.quantidade);
         } else {
@@ -306,24 +296,24 @@ void alterar_descricao_arquivo(int identificador){
         }
     }
 
-        fclose(arq);
-        fclose(temporario);
+    fclose(arq);
+    fclose(temporario);
 
-        if (quant_modificados > 0) {
-            if (remove("gerenciamento.csv") != 0) {
-                perror("Falha ao remover o arquivo original");
-                return;
-            }
-            if (rename("temporario.csv", "gerenciamento.csv") != 0) {
-                perror("Falha ao renomear o arquivo temporario");
-                return;
-            }
-            printf("\nITEM MODIFICADO COM SUCESSO!\n");
-        } else {
-            remove("temporario.csv"); // Remove o temporário se nenhum item foi deletado
-            printf("Item nao encontrado.\n");
+    if (quant_modificados > 0) {
+        if (remove("gerenciamento.csv") != 0) {
+            perror("Falha ao remover o arquivo original");
+            return;
         }
+        if (rename("temporario.csv", "gerenciamento.csv") != 0) {
+            perror("Falha ao renomear o arquivo temporario");
+            return;
+        }
+        printf("\nITEM MODIFICADO COM SUCESSO!\n");
+    } else {
+        remove("temporario.csv"); // Remove o temporário se nenhum item foi deletado
+        printf("Item nao encontrado.\n");
     }
+}
 
 void listar_arquivo(){
     FILE *arq = fopen("gerenciamento.csv", "r"); // Abre o arquivo em modo leitura
@@ -340,12 +330,9 @@ void listar_arquivo(){
     printf("ID  | DESCRICAO          | QUANTIDADE\n");
     printf("----|--------------------|-----------\n");
 
-    // Lê e exibe cada linha restante
     while (fgets(cada_linha, sizeof(cada_linha), arq) != NULL) {
-        // Remove o '\n' do final da linha (se existir)
         cada_linha[strcspn(cada_linha, "\n")] = '\0';
 
-        // Extrai os campos usando strtok()
         char *id_str = strtok(cada_linha, ";");
         char *descricao = strtok(NULL, ";");
         char *quantidade_str = strtok(NULL, ";");
@@ -357,5 +344,5 @@ void listar_arquivo(){
         }
     }
     fclose(arq); 
-    printf("\n\t\tTem %d itens\n", contar_linhas_csv("gerenciamento.csv"));
+    printf("\n\t\tTem %d itens\n", contar_linhas_csv("gerenciamento.csv") - 1); // -1 para ignorar cabeçalho
 }
