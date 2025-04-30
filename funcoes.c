@@ -5,8 +5,9 @@
 #include <string.h>
 #include "funcoes.h"
 
-static int ultimo_id;
+static int ultimo_id; // Variável estática para armazenar o último ID utilizado
 
+// Função para carregar o último ID usado do arquivo
 void carregar_ultimo_id() {  
     FILE *arq = fopen("gerenciamento.csv", "r");  
     if (arq == NULL) {
@@ -31,6 +32,7 @@ void carregar_ultimo_id() {
     fclose(arq);  
 }
 
+// Função para gerar um novo ID único
 int gerar_novo_id() {
     return ++ultimo_id;
 }
@@ -56,6 +58,7 @@ int contar_palavras_descricao(const char *str) {
     return quantidade_palavras;
 }
 
+// Função para contar linhas de um arquivo CSV
 int contar_linhas_csv(const char *nome_arquivo) {
     FILE *arq = fopen(nome_arquivo, "r");
     if (arq == NULL) {
@@ -74,6 +77,7 @@ int contar_linhas_csv(const char *nome_arquivo) {
     return linhas;
 }
 
+// Função para limpar o buffer do teclado
 void limpar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -117,6 +121,7 @@ produto_colecao coletor_add() {
     return item_variador;
 }
 
+// Função para escrever item no arquivo
 void cadastrar_arquivo(produto_colecao produto){
     FILE *arq = fopen("gerenciamento.csv", "r");
     if(arq == NULL){
@@ -142,6 +147,7 @@ void cadastrar_arquivo(produto_colecao produto){
     printf("\nO ITEM FOI CADASTRADO COM SUCESSO!\n");  
 }
 
+// Função para consultar item pelo identificador
 void consultar_item_arquivo(int identificador) {
     FILE *arq = fopen("gerenciamento.csv", "r");
 
@@ -179,6 +185,7 @@ void consultar_item_arquivo(int identificador) {
     fclose(arq);
 }
 
+// Função usada para remover item do arquivo utilizando um arquivo temporário
 void remover_item_arquivo(int identificador){
     FILE *arq = fopen("gerenciamento.csv", "r");
     FILE *temporario = fopen("temporario.csv", "w");
@@ -226,6 +233,7 @@ void remover_item_arquivo(int identificador){
     }
 }
 
+// Função para alterar os dados dos itens também utilizando um arquivo temporário
 produto_colecao alterar_descricao_quantidade(int identificador){
     produto_colecao item_variador;
 
@@ -258,6 +266,7 @@ produto_colecao alterar_descricao_quantidade(int identificador){
     return item_variador;
 }
 
+// Função para alterar os dados dos itens também utilizando um arquivo temporário
 void alterar_descricao_arquivo(int identificador){
     produto_colecao novo_item;
 
@@ -315,6 +324,7 @@ void alterar_descricao_arquivo(int identificador){
     }
 }
 
+// Função utilizada para conseguir listar todo o acervo criado
 void listar_arquivo(){
     FILE *arq = fopen("gerenciamento.csv", "r"); // Abre o arquivo em modo leitura
     if (arq == NULL) {

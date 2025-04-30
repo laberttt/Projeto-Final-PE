@@ -7,6 +7,7 @@ int main() {
     produto_colecao item;
     carregar_ultimo_id();
 
+    // Criação do menu
     do
     {
        printf("\n======== Menu ========\n");
@@ -19,6 +20,7 @@ int main() {
        printf("Digite uma opcao: ");
        scanf("%d", &opc);
 
+       // Chamando a função para a limpeza do buffer
        limpar_buffer();
        
        switch (opc)

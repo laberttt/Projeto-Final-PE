@@ -1,12 +1,14 @@
 #ifndef FUNCOES_H
 #define FUNCOES_H
 
+// Criando a struct utilziada no projeto
 typedef struct {
     int identificador;
     char descricao[256];
     int quantidade;
 } produto_colecao;
 
+// Declaração das funções criadas e que irão ser utilizadas
 int contar_linhas_csv(const char *nome_arquivo);
 int contar_palavras_descricao(const char *str);
 produto_colecao coletor_add();
